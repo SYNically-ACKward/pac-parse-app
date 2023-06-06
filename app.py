@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import pacparser
 
 app = Flask(__name__)
@@ -28,6 +28,21 @@ def home():
         return render_template('result.html', proxy_config=proxy_config, query=url_to_test)
 
     return render_template('index.html')
+
+# Upload PAC file
+@app.route('/upload', methods=['POST'])
+def upload():
+    # Check if the user submitted a new PAC file
+    if 'pacFile' in request.files:
+        # Get the uploaded PAC file
+        uploaded_file = request.files['pacFile']
+        pac_file_content = uploaded_file.read().decode('utf-8')
+
+        # Parse the new PAC file
+        pacparser.parse_pac_string(pac_file_content)
+
+    # Redirect to the home page
+    return redirect('/')
 
 # Results page
 @app.route('/result', methods=['POST'])
