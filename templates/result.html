@@ -1,13 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PAC File Evaluation Result</title>
+    <title>PAC Parse App - Results</title>
+    <style>
+        /* Add your custom CSS styles here */
+    </style>
 </head>
 <body>
-    <h1>PAC File Evaluation Result</h1>
-    <p>Proxy Configuration: {{ proxy_config }}</p>
-    <form action="/" method="GET">
-        <input type="submit" value="Submit New PAC File and Query">
+    <h1>Results</h1>
+    <p>Proxy: <strong>{{ proxy }}</strong></p>
+    <p>Query: <strong>{{ query }}</strong></p>
+    <p>Result: <strong>{{ result }}</strong></p>
+
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <label for="pacFile">Upload new PAC file:</label>
+        <input type="file" id="pacFile" name="pacFile" required accept=".pac">
+        <br><br>
+        <label for="query">Enter a new query:</label>
+        <input type="text" id="query" name="query" required>
+        <br><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <form action="/query" method="post">
+        <label for="query">Submit a new query using the same PAC logic:</label>
+        <input type="text" id="query" name="query" required>
+        <br><br>
+        <button type="submit">Submit</button>
     </form>
 </body>
 </html>
