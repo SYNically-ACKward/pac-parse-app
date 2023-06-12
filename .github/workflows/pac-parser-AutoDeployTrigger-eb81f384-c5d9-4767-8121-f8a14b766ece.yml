@@ -1,0 +1,42 @@
+name: Trigger auto deployment for pac-parser
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '**'
+    - '.github/workflows/pac-parser-AutoDeployTrigger-eb81f384-c5d9-4767-8121-f8a14b766ece.yml'
+
+  # Allow mannually trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.PACPARSER_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          appSourcePath: ${{ github.workspace }} 
+          registryUrl: hub.docker.com
+          registryUsername: ${{ secrets.PACPARSER_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.PACPARSER_REGISTRY_PASSWORD }}
+          containerAppName: pac-parser
+          resourceGroup: SYNically-ACKward-RG
+          imageToBuild: hub.docker.com/pac-parser:${{ github.sha }}
+          
+
+     
+
